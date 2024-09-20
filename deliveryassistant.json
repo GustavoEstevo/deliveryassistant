@@ -1,0 +1,80 @@
+{
+  "Comment": "User Management Workflow",
+  "StartAt": "CreateUser",
+  "States": {
+    "CreateUser": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:CreateUserFunction",
+      "Next": "AuthenticateUser"
+    },
+    "AuthenticateUser": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:AuthenticateUserFunction",
+      "Next": "GetOrderHistory"
+    },
+    "GetOrderHistory": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:GetOrderHistoryFunction",
+      "Next": "GetCoupons"
+    },
+    "GetCoupons": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:GetCouponsFunction",
+      "End": true
+    }
+  }
+}
+{
+  "Comment": "Push Notification Workflow",
+  "StartAt": "SendNotification",
+  "States": {
+    "SendNotification": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:SendNotificationFunction",
+      "End": true
+    }
+  }
+}
+{
+  "Comment": "Order Management Workflow",
+  "StartAt": "CreateOrder",
+  "States": {
+    "CreateOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:CreateOrderFunction",
+      "Next": "ValidateOrder"
+    },
+    "ValidateOrder": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:ValidateOrderFunction",
+      "Next": "ProcessPayment"
+    },
+    "ProcessPayment": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:ProcessPaymentFunction",
+      "Next": "UpdateOrderStatus"
+    },
+    "UpdateOrderStatus": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:REGION:ACCOUNT_ID:function:UpdateOrderStatusFunction",
+      "End": true
+    }
+  }
+}
+{
+  "Comment": "Invoke Bedrock Model",
+  "StartAt": "InvokeModel",
+  "States": {
+    "InvokeModel": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::bedrock:invokeModel",
+      "Parameters": {
+        "ModelId": "your-model-id",
+        "Body": {
+          "input": "your-input-data"
+        }
+      },
+      "End": true
+    }
+  }
+}
